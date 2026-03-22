@@ -3,13 +3,13 @@
 :root {
   --bg-ink: #2e485a;
   --bg-deep: #183449;
-  --sea: #ffffff;
+  --sea: #2596be;
   --land: #ffffff;
-  --line: rgba(70, 86, 96, 0.32);
-  --line-strong: rgba(42, 58, 72, 0.56);
-  --accent: #ff820d;
+  --line: #141617;
+  --line-strong: #141617;
+  --accent: #ef5725;
   --danger: #eb6f5b;
-  --success: #54c48b;
+  --success: #8ec641;
   --text-main: #f9f5ea;
   --text-dim: rgba(249, 245, 234, 0.78);
   --shadow: 0 24px 64px rgba(6, 19, 27, 0.34);
@@ -28,9 +28,9 @@ body {
 body {
   font-family: "Poppins", sans-serif;
   background:
-    radial-gradient(circle at top left, rgba(255, 230, 180, 0.22), transparent 28%),
-    radial-gradient(circle at 85% 20%, rgba(115, 173, 205, 0.28), transparent 24%),
-    linear-gradient(180deg, #43657a 0%, #2d5167 45%, #183449 100%);
+    radial-gradient(circle at top left, rgba(255, 230, 180, 0.22), transparent 0%),
+    radial-gradient(circle at 85% 20%, rgba(115, 173, 205, 0.28), transparent 0%),
+    linear-gradient(180deg, #43657a 0%, #2d5167 45%, #183449 0%);
   color: var(--text-main);
 }
 
