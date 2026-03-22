@@ -128,6 +128,14 @@ body {
   font-weight: 500;
 }
 
+.streak {
+  margin: 6px 0 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: rgba(255, 248, 235, 0.85);
+}
+
 .zoom-hint {
   right: 18px;
   bottom: 18px;
