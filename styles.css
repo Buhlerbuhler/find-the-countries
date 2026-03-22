@@ -122,10 +122,7 @@ body {
 }
 
 .subprompt {
-  margin: 6px 0 0;
-  color: var(--text-dim);
-  font-size: 0.82rem;
-  font-weight: 500;
+  display: none;
 }
 
 .streak {
