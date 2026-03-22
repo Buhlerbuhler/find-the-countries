@@ -2,9 +2,245 @@ import world from "https://cdn.jsdelivr.net/npm/@svg-maps/world/+esm";
 
 const BEST_STREAK_KEY = "find-the-country-best-streak";
 const EXCLUDED_COUNTRIES = new Set(["Antarctica"]);
-const MIN_COUNTRY_NAME = "Luxembourg";
 const PAN_THRESHOLD = 8;
 const DOUBLE_TAP_MS = 300;
+
+const PLAYABLE_COUNTRY_NAMES = new Set([
+  "Afghanistan",
+  "Albania",
+  "Algeria",
+  "Andorra",
+  "Angola",
+  "Antigua and Barbuda",
+  "Argentina",
+  "Armenia",
+  "Australia",
+  "Austria",
+  "Azerbaijan",
+  "Bahamas",
+  "Bahrain",
+  "Bangladesh",
+  "Barbados",
+  "Belarus",
+  "Belgium",
+  "Belize",
+  "Benin",
+  "Bhutan",
+  "Bolivia",
+  "Bosnia and Herzegovina",
+  "Botswana",
+  "Brazil",
+  "Brunei",
+  "Bulgaria",
+  "Burkina Faso",
+  "Burundi",
+  "Cabo Verde",
+  "Cambodia",
+  "Cameroon",
+  "Canada",
+  "Central African Republic",
+  "Chad",
+  "Chile",
+  "China",
+  "Colombia",
+  "Comoros",
+  "Congo",
+  "Costa Rica",
+  "Croatia",
+  "Cuba",
+  "Cyprus",
+  "Czechia",
+  "Democratic Republic of the Congo",
+  "Denmark",
+  "Djibouti",
+  "Dominica",
+  "Dominican Republic",
+  "Ecuador",
+  "Egypt",
+  "El Salvador",
+  "Equatorial Guinea",
+  "Eritrea",
+  "Estonia",
+  "Eswatini",
+  "Ethiopia",
+  "Fiji",
+  "Finland",
+  "France",
+  "Gabon",
+  "Gambia",
+  "Georgia",
+  "Germany",
+  "Ghana",
+  "Greece",
+  "Grenada",
+  "Guatemala",
+  "Guinea",
+  "Guinea-Bissau",
+  "Guyana",
+  "Haiti",
+  "Honduras",
+  "Hungary",
+  "Iceland",
+  "India",
+  "Indonesia",
+  "Iran",
+  "Iraq",
+  "Ireland",
+  "Israel",
+  "Italy",
+  "Jamaica",
+  "Japan",
+  "Jordan",
+  "Kazakhstan",
+  "Kenya",
+  "Kiribati",
+  "Kuwait",
+  "Kyrgyzstan",
+  "Laos",
+  "Latvia",
+  "Lebanon",
+  "Lesotho",
+  "Liberia",
+  "Libya",
+  "Liechtenstein",
+  "Lithuania",
+  "Luxembourg",
+  "Madagascar",
+  "Malawi",
+  "Malaysia",
+  "Maldives",
+  "Mali",
+  "Malta",
+  "Marshall Islands",
+  "Mauritania",
+  "Mauritius",
+  "Mexico",
+  "Micronesia",
+  "Moldova",
+  "Monaco",
+  "Mongolia",
+  "Montenegro",
+  "Morocco",
+  "Mozambique",
+  "Myanmar",
+  "Namibia",
+  "Nauru",
+  "Nepal",
+  "Netherlands",
+  "New Zealand",
+  "Nicaragua",
+  "Niger",
+  "Nigeria",
+  "North Korea",
+  "North Macedonia",
+  "Norway",
+  "Oman",
+  "Pakistan",
+  "Palau",
+  "Palestine",
+  "Panama",
+  "Papua New Guinea",
+  "Paraguay",
+  "Peru",
+  "Philippines",
+  "Poland",
+  "Portugal",
+  "Qatar",
+  "Romania",
+  "Russia",
+  "Rwanda",
+  "Saint Kitts and Nevis",
+  "Saint Lucia",
+  "Saint Vincent and the Grenadines",
+  "Samoa",
+  "San Marino",
+  "Sao Tome and Principe",
+  "Saudi Arabia",
+  "Senegal",
+  "Serbia",
+  "Seychelles",
+  "Sierra Leone",
+  "Singapore",
+  "Slovakia",
+  "Slovenia",
+  "Solomon Islands",
+  "Somalia",
+  "South Africa",
+  "South Korea",
+  "South Sudan",
+  "Spain",
+  "Sri Lanka",
+  "Sudan",
+  "Suriname",
+  "Sweden",
+  "Switzerland",
+  "Syria",
+  "Tajikistan",
+  "Tanzania",
+  "Thailand",
+  "Timor-Leste",
+  "Togo",
+  "Tonga",
+  "Trinidad and Tobago",
+  "Tunisia",
+  "Turkey",
+  "Turkmenistan",
+  "Tuvalu",
+  "Uganda",
+  "Ukraine",
+  "United Arab Emirates",
+  "United Kingdom",
+  "United States",
+  "Uruguay",
+  "Uzbekistan",
+  "Vanuatu",
+  "Vatican City",
+  "Venezuela",
+  "Vietnam",
+  "Yemen",
+  "Zambia",
+  "Zimbabwe",
+]);
+
+const COUNTRY_NAME_ALIASES = new Map([
+  ["bahamas, the", "Bahamas"],
+  ["brunei darussalam", "Brunei"],
+  ["cape verde", "Cabo Verde"],
+  ["congo", "Congo"],
+  ["republic of the congo", "Congo"],
+  ["republic of congo", "Congo"],
+  ["democratic republic of the congo", "Democratic Republic of the Congo"],
+  ["democratic republic of congo", "Democratic Republic of the Congo"],
+  ["dr congo", "Democratic Republic of the Congo"],
+  ["czech republic", "Czechia"],
+  ["iran, islamic republic of", "Iran"],
+  ["korea, north", "North Korea"],
+  ["korea, democratic people's republic of", "North Korea"],
+  ["korea, south", "South Korea"],
+  ["korea, republic of", "South Korea"],
+  ["lao people's democratic republic", "Laos"],
+  ["micronesia, federated states of", "Micronesia"],
+  ["moldova, republic of", "Moldova"],
+  ["north macedonia", "North Macedonia"],
+  ["macedonia", "North Macedonia"],
+  ["palestine, state of", "Palestine"],
+  ["russian federation", "Russia"],
+  ["saint kitts & nevis", "Saint Kitts and Nevis"],
+  ["saint vincent & the grenadines", "Saint Vincent and the Grenadines"],
+  ["slovak republic", "Slovakia"],
+  ["syrian arab republic", "Syria"],
+  ["timor leste", "Timor-Leste"],
+  ["türkiye", "Turkey"],
+  ["turkiye", "Turkey"],
+  ["united states of america", "United States"],
+  ["usa", "United States"],
+  ["vatican", "Vatican City"],
+  ["holy see", "Vatican City"],
+  ["venezuela, bolivarian republic of", "Venezuela"],
+  ["viet nam", "Vietnam"],
+  ["swaziland", "Eswatini"],
+  ["myanmar (burma)", "Myanmar"],
+]);
 
 const promptEl = document.querySelector("#prompt");
 const subpromptEl = document.querySelector("#subprompt");
@@ -64,6 +300,19 @@ function initialize() {
   }
 }
 
+function normalizeCountryName(name) {
+  if (!name) return "";
+
+  const cleaned = name.trim();
+  const lowered = cleaned.toLowerCase();
+
+  if (COUNTRY_NAME_ALIASES.has(lowered)) {
+    return COUNTRY_NAME_ALIASES.get(lowered);
+  }
+
+  return cleaned;
+}
+
 function renderMap(countries) {
   mapRoot.textContent = "";
 
@@ -98,9 +347,25 @@ function renderMap(countries) {
 
 function buildPlayablePool(countries) {
   countryAreas = computeFilledAreas(countryPaths);
-  const minimumArea = countryAreas.get(MIN_COUNTRY_NAME) || 0;
 
-  return countries.filter((country) => (countryAreas.get(country.name) || 0) > minimumArea);
+  const playable = countries.filter((country) => {
+    const normalized = normalizeCountryName(country.name);
+    return PLAYABLE_COUNTRY_NAMES.has(normalized);
+  });
+
+  const matchedNormalizedNames = new Set(
+    playable.map((country) => normalizeCountryName(country.name)),
+  );
+
+  const missingNames = [...PLAYABLE_COUNTRY_NAMES].filter(
+    (name) => !matchedNormalizedNames.has(name),
+  );
+
+  if (missingNames.length) {
+    console.warn("These playable countries were not found in the map dataset:", missingNames);
+  }
+
+  return playable;
 }
 
 function computeFilledAreas(paths) {
@@ -120,7 +385,9 @@ function computeFilledAreas(paths) {
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     const { data } = ctx.getImageData(0, 0, w, h);
     let pixels = 0;
-    for (let i = 3; i < data.length; i += 4) if (data[i] > 0) pixels++;
+    for (let i = 3; i < data.length; i += 4) {
+      if (data[i] > 0) pixels++;
+    }
     areas.set(path.dataset.name, pixels);
   }
 
@@ -129,6 +396,9 @@ function computeFilledAreas(paths) {
 
 function startGame() {
   if (!state.playableCountries.length) {
+    promptEl.textContent = "No playable countries found";
+    subpromptEl.textContent = "Check your country names against the map dataset.";
+    statusEl.textContent = "Nothing matched the 195-country list.";
     return;
   }
 
@@ -184,8 +454,10 @@ function handleGuess(country) {
 
   const guessedName = country.name;
   const targetName = state.target.name;
+  const guessedNormalized = normalizeCountryName(guessedName);
+  const targetNormalized = normalizeCountryName(targetName);
 
-  if (guessedName === targetName) {
+  if (guessedNormalized === targetNormalized) {
     state.score += 1;
     updateBestStreak();
     paintCountry(guessedName, "correct");
@@ -428,7 +700,6 @@ function handleWheel(event) {
   currentViewBox.height = nextHeight;
   applyViewBox();
 }
-
 
 function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
