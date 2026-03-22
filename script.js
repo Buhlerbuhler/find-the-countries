@@ -244,6 +244,7 @@ const COUNTRY_NAME_ALIASES = new Map([
 
 const promptEl = document.querySelector("#prompt");
 const subpromptEl = document.querySelector("#subprompt");
+const streakEl = document.querySelector("#streak");
 const statusEl = document.querySelector("#status");
 const restartButton = document.querySelector("#restartButton");
 const overlayRestartButton = document.querySelector("#overlayRestartButton");
@@ -291,10 +292,14 @@ function initialize() {
 
     renderMap(state.allCountries);
     state.playableCountries = buildPlayablePool(state.allCountries);
+    updateStreakDisplay();
     startGame();
   } catch (error) {
     promptEl.textContent = "Map failed to load";
     subpromptEl.textContent = "The browser could not import the map module. Refresh or try a local server.";
+    if (streakEl) {
+      streakEl.textContent = "";
+    }
     statusEl.textContent = "Unable to initialize country borders.";
     console.error(error);
   }
@@ -311,6 +316,11 @@ function normalizeCountryName(name) {
   }
 
   return cleaned;
+}
+
+function updateStreakDisplay() {
+  if (!streakEl) return;
+  streakEl.textContent = `Streak: ${state.score} | Best: ${state.bestStreak}`;
 }
 
 function renderMap(countries) {
@@ -398,6 +408,9 @@ function startGame() {
   if (!state.playableCountries.length) {
     promptEl.textContent = "No playable countries found";
     subpromptEl.textContent = "Check your country names against the map dataset.";
+    if (streakEl) {
+      streakEl.textContent = "";
+    }
     statusEl.textContent = "Nothing matched the 195-country list.";
     return;
   }
@@ -413,6 +426,7 @@ function startGame() {
   hideSelection();
   resetView();
   resetCountryClasses();
+  updateStreakDisplay();
   statusEl.textContent = "Tap a country to select it, then lock it in.";
   advanceRound();
 }
@@ -429,6 +443,7 @@ function advanceRound() {
   hideSelection();
   resetCountryClasses();
   updatePrompt();
+  updateStreakDisplay();
 }
 
 function updatePrompt() {
@@ -460,6 +475,7 @@ function handleGuess(country) {
   if (guessedNormalized === targetNormalized) {
     state.score += 1;
     updateBestStreak();
+    updateStreakDisplay();
     paintCountry(guessedName, "correct");
     statusEl.textContent = `${guessedName} is right. Keep it moving.`;
 
@@ -470,6 +486,7 @@ function handleGuess(country) {
   }
 
   state.gameOver = true;
+  updateStreakDisplay();
   paintCountry(guessedName, "wrong");
   paintCountry(targetName, "reveal");
   statusEl.textContent = `${guessedName} was wrong. ${targetName} was the target.`;
@@ -482,6 +499,7 @@ function handleGuess(country) {
 function finishWin() {
   state.locked = true;
   state.gameOver = true;
+  updateStreakDisplay();
   promptEl.innerHTML = `Perfect run: <span>${state.score}</span>`;
   subpromptEl.textContent = "You cleared the full playable set for this run.";
   statusEl.textContent = "Start a new game to reshuffle the world.";
@@ -489,7 +507,7 @@ function finishWin() {
 }
 
 function updateBestStreak() {
-  const nextBest = state.score + 1;
+  const nextBest = state.score;
 
   if (nextBest <= state.bestStreak) {
     return;
