@@ -3,9 +3,9 @@
 :root {
   --bg-ink: #2e485a;
   --bg-deep: #183449;
-  --sea: #2596be;
-  --land: #ffffff;
-  --line: #141617;
+  --sea: #70c9ff;
+  --land: #fcefeb;
+  --line: #383d40;
   --line-strong: #141617;
   --accent: #e95625;
   --danger: #eb6f5b;
@@ -82,8 +82,8 @@ body {
 .hero-bar {
   padding: 12px 16px 11px;
   text-align: center;
-  background: #f9f5ea;
-  border: 2px solid #f9f5ea;
+  background: #141617;
+  border: 2px solid #141617;
   border-radius: 0px;
   box-shadow: var(--shadow);
   backdrop-filter: blur(10px);
